@@ -11,12 +11,14 @@ namespace SpaceInvaders
             return characterType switch
             {
                 CharacterType.Saucer => new KillableAsciiSprite(
+                    CharacterType.Saucer,
                     new[]
                     {
                         @"_/MM\_", 
                         @"qWAAWp"
                     }, null, location, ConsoleColor.DarkRed),
                 CharacterType.Alien1 => new KillableAsciiSprite(
+                    CharacterType.Alien1,
                     new[]
                     {
                         @"      ",
@@ -30,6 +32,7 @@ namespace SpaceInvaders
                         @"  \/  ", 
                     }, location, ConsoleColor.DarkYellow),
                 CharacterType.Alien2 => new KillableAsciiSprite(
+                    CharacterType.Alien2,
                     new[]
                     {
                         @"      ",
@@ -43,6 +46,7 @@ namespace SpaceInvaders
                         " ~||~ ", 
                     }, location, ConsoleColor.DarkYellow),
                 CharacterType.Alien3 => new KillableAsciiSprite(
+                    CharacterType.Alien3,
                     new[]
                     {
                         @"      ",
@@ -56,6 +60,7 @@ namespace SpaceInvaders
                         @" \~~/ ", 
                     }, location, ConsoleColor.DarkYellow),
                 CharacterType.AlienExplode => new KillableAsciiSprite(
+                    CharacterType.AlienExplode,
                     new[]
                     {
                         @"      ",
@@ -63,12 +68,14 @@ namespace SpaceInvaders
                         @" /||\ ", 
                     }, null, location, ConsoleColor.Red),
                 CharacterType.Gunner => new KillableAsciiSprite(
+                    CharacterType.Gunner,
                     new[]
                     {
                         "  mAm  ", 
                         " MAMAM "
                     }, null, location, ConsoleColor.Green),
                 CharacterType.GunnerExplode => new KillableAsciiSprite(
+                    CharacterType.GunnerExplode,
                     new[]
                     {
                         " ,' %  ",
@@ -77,6 +84,7 @@ namespace SpaceInvaders
                         " +  ^~ "
                     }, null, location, ConsoleColor.Red),
                 CharacterType.Shield => new ShieldAsciiSprite(
+                    CharacterType.Shield,
                     new[]
                     {
                         @"/MMMMM\",

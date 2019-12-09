@@ -13,8 +13,8 @@ namespace SpaceInvaders
         private static bool _gameOver;
         private static Direction _direction;
         private static AsciiSprite _player;
-        private static List<AsciiSprite> _aliens;
-        private static List<AsciiSprite> _shields;
+        private static List<KillableAsciiSprite> _aliens;
+        private static List<ShieldAsciiSprite> _shields;
         private static Size _size;
         private static int _score;
         private const int _aliensPerRow = 9;
@@ -46,33 +46,32 @@ namespace SpaceInvaders
 
         private static void Setup()
         {
-            Console.CursorVisible = false;
             Console.SetWindowSize(1,1);
             Console.SetBufferSize(80,40);
             Console.SetWindowSize(80,40);
+            Console.CursorVisible = false;
             _gameOver = false;
             _size = new Size(80, 40);
             _player = CharacterFactory.Create(CharacterType.Gunner, new Point(0, 26));
 
-            _aliens = new List<AsciiSprite>();
+            _aliens = new List<KillableAsciiSprite>();
 
             for (int row = 0; row < _rowsOfAliens; row++)
             {
                 for (int column = 0; column < _aliensPerRow; column++)
                 {
-                    _aliens.Add(CharacterFactory.Create(DetermineAlienType(row), new Point(column*7, row*3 + 4)));
+                    _aliens.Add((KillableAsciiSprite) CharacterFactory.Create(DetermineAlienType(row), new Point(column*7, row*3 + 4)));
                 }
-
             }
 
-            _shields = new List<AsciiSprite>();
+            _shields = new List<ShieldAsciiSprite>();
             for (int column = 0; column < _aliensPerRow; column++)
             {
-                _shields.Add(CharacterFactory.Create(CharacterType.Shield, new Point(column * 9, 22)));
+                _shields.Add((ShieldAsciiSprite) CharacterFactory.Create(CharacterType.Shield, new Point(column * 9, 22)));
             }
 
             _lastAlienMove = DateTime.Now;
-            _alienMoveInterval = TimeSpan.FromSeconds(1);
+            _alienMoveInterval = TimeSpan.FromSeconds(0.2);
             _alienDirection = Direction.Right;
 
             _playerBullet = new Bullet();
@@ -90,10 +89,23 @@ namespace SpaceInvaders
 
         private static void End()
         {
+            Environment.Exit(0);
         }
 
         private static void Logic()
         {
+            var aliensBottom = _aliens.Bottom();
+            if (aliensBottom == _player.Location.Y)
+            {
+                End();
+            }
+
+            _shields.ForEach(s =>
+            {
+                s.AliensHitShields(aliensBottom);
+            });
+
+
             if (DateTime.Now - _lastAlienMove > _alienMoveInterval)
             {
                 switch (_alienDirection)
@@ -131,8 +143,7 @@ namespace SpaceInvaders
                 Task.Factory.StartNew(() => Console.Beep(2000, 10));
             }
 
-            _playerBullet.MoveBullet();
-
+            // remove the dead aliens the next pass through, so they have erased themselves
             var deadAlien = _aliens.FirstOrDefault(a => ((KillableAsciiSprite) a).Hit);
             if (deadAlien != null)
             {
@@ -144,7 +155,14 @@ namespace SpaceInvaders
                 End();
             }
 
-            if (_playerBullet.IsActive)
+            if (_playerBullet != null && !_playerBullet.IsActive)
+            {
+                _playerBullet = null;
+            }
+
+            _playerBullet?.MoveBullet();
+
+            if (_playerBullet != null && _playerBullet.IsActive)
             {
                 _shields.ForEach(s =>
                 {
@@ -162,10 +180,9 @@ namespace SpaceInvaders
                     {
                         _playerBullet.IsActive = false;
                         ((KillableAsciiSprite)a).Hit = true;
+                        _score += 100;
                     }
                 });
-
-
             }
         }
 
@@ -215,22 +232,26 @@ namespace SpaceInvaders
 
         private static void PlayerFire()
         {
+            if (_playerBullet == null)
+            {
+                _playerBullet = new Bullet();
+            }
+
             if (_playerBullet.IsActive)
             {
                 return;
             }
 
+            Task.Factory.StartNew(() => Console.Beep(4000, 100));
             _playerBullet.Fire(new Point(_player.Location.X +3, _player.Location.Y -1), Direction.Up);
-
         }
 
         private static void Draw()
         {
-            _aliens.ForEach(a => a.Draw());
             _shields.ForEach(a => a.Draw());
+            _aliens.ForEach(a => a.Draw());
             _player.Draw();
-            _playerBullet.DeletePrevious();
-            _playerBullet.Draw();
+            _playerBullet?.Draw();
 
             $"Score: {_score}".Write(3, 1);
         }

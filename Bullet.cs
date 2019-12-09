@@ -83,11 +83,13 @@ namespace SpaceInvaders
         {
             if (IsActive)
             {
+                _oldLocation.Write(" ");
                 Location.Write("|", ConsoleColor.DarkRed);
             }
             else
             {
-                Location.Write(" ", ConsoleColor.DarkRed);
+                _oldLocation.Write(" ");
+                Location.Write(" ");
             }
         }
 
@@ -95,7 +97,6 @@ namespace SpaceInvaders
         {
             if (IsActive)
             {
-                _oldLocation.Write(" ", ConsoleColor.DarkRed);
             }
         }
 

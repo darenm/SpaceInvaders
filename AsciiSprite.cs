@@ -10,8 +10,11 @@ namespace SpaceInvaders
         protected readonly List<string[]> _frames;
         protected int _currentFrame;
 
-        public AsciiSprite(string[] frame1, string[] frame2, Point initialLocation, ConsoleColor color)
+        public CharacterType CharacterType { get; private set; }
+
+        public AsciiSprite(CharacterType characterType, string[] frame1, string[] frame2, Point initialLocation, ConsoleColor color)
         {
+            CharacterType = characterType;
             _frames = new List<string[]> {frame1};
             if (frame2 != null) _frames.Add(frame2);
 
@@ -43,8 +46,8 @@ namespace SpaceInvaders
     public class KillableAsciiSprite : AsciiSprite
     {
         public bool Hit { get; set; }
-        public KillableAsciiSprite(string[] frame1, string[] frame2, Point initialLocation, ConsoleColor color) : base(
-            frame1, frame2, initialLocation, color)
+        public KillableAsciiSprite(CharacterType characterType, string[] frame1, string[] frame2, Point initialLocation, ConsoleColor color) : base(
+            characterType, frame1, frame2, initialLocation, color)
         {
         }
 
@@ -91,8 +94,8 @@ namespace SpaceInvaders
 
     public class ShieldAsciiSprite : AsciiSprite
     {
-        public ShieldAsciiSprite(string[] frame1, string[] frame2, Point initialLocation, ConsoleColor color) : base(
-            frame1, frame2, initialLocation, color)
+        public ShieldAsciiSprite(CharacterType characterType, string[] frame1, string[] frame2, Point initialLocation, ConsoleColor color) : base(
+            characterType, frame1, frame2, initialLocation, color)
         {
         }
 
@@ -119,6 +122,31 @@ namespace SpaceInvaders
             lineArray[offset.X] = ' ';
             _frames[_currentFrame][offset.Y] = new string(lineArray);
             return true;
+        }
+
+        public void AliensHitShields(in int aliensBottom)
+        {
+            for (var index = 0; index < _frames[_currentFrame].Length; index++)
+            {
+                var line = _frames[_currentFrame][index];
+                if (line == new string(' ', 7))
+                {
+                    _frames[_currentFrame][index] = string.Empty;
+                }
+            }
+
+            var offset = aliensBottom - Location.Y;
+            if (offset < 0)
+            {
+                return;
+            }
+
+            if (offset >= _frames[_currentFrame].Length)
+            {
+                return;
+            }
+
+            _frames[_currentFrame][offset] = new string(' ', 7);
         }
     }
 }

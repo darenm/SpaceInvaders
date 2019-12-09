@@ -75,15 +75,19 @@ namespace SpaceInvaders
             Console.ResetColor();
         }
 
-        public static int Left(this List<AsciiSprite> sprites)
+        public static int Left(this List<KillableAsciiSprite> sprites)
         {
             return sprites.Select(s => s.Location.X).Concat(new[] {int.MaxValue}).Min();
         }
 
-        public static int Right(this List<AsciiSprite> sprites)
+        public static int Right(this List<KillableAsciiSprite> sprites)
         {
             return sprites.Select(s => s.Location.X).Concat(new[] { int.MinValue }).Max();
         }
 
+        public static int Bottom(this List<KillableAsciiSprite> sprites)
+        {
+            return sprites.Select(s => s.Location.Y + 3).Concat(new[] { int.MinValue }).Max();
+        }
     }
 }
