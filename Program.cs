@@ -87,6 +87,17 @@ namespace SpaceInvaders
             };
         }
 
+        private static int DetermineAlienScore(in CharacterType characterType)
+        {
+            return characterType switch
+            {
+                CharacterType.Saucer => 500,
+                CharacterType.Alien1 => 100,
+                CharacterType.Alien2 => 50,
+                _ => 10
+            };
+        }
+
         private static void End()
         {
             Environment.Exit(0);
@@ -179,8 +190,8 @@ namespace SpaceInvaders
                     if (hit)
                     {
                         _playerBullet.IsActive = false;
-                        ((KillableAsciiSprite)a).Hit = true;
-                        _score += 100;
+                        a.Hit = true;
+                        _score += DetermineAlienScore(a.CharacterType);
                     }
                 });
             }
