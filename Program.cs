@@ -72,7 +72,7 @@ namespace SpaceInvaders
             }
 
             _lastAlienMove = DateTime.Now;
-            _alienMoveInterval = TimeSpan.FromSeconds(0.2);
+            _alienMoveInterval = TimeSpan.FromSeconds(0.8);
             _alienDirection = Direction.Right;
 
             _playerBullet = new Bullet();
@@ -157,7 +157,7 @@ namespace SpaceInvaders
             }
 
             // remove the dead aliens the next pass through, so they have erased themselves
-            var deadAlien = _aliens.FirstOrDefault(a => ((KillableAsciiSprite) a).Hit);
+            var deadAlien = _aliens.FirstOrDefault(a => a.Hit);
             if (deadAlien != null)
             {
                 _aliens.Remove(deadAlien);
@@ -212,9 +212,9 @@ namespace SpaceInvaders
 
         private static void UpdateAlienMoveInterval()
         {
-            if (_alienMoveInterval > TimeSpan.FromMilliseconds(100))
+            if (_alienMoveInterval > TimeSpan.FromMilliseconds(50))
             {
-                _alienMoveInterval -= TimeSpan.FromMilliseconds(100);
+                _alienMoveInterval -= TimeSpan.FromMilliseconds(110);
             }
         }
 
