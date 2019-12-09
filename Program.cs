@@ -24,7 +24,8 @@ namespace SpaceInvaders
         private static TimeSpan _alienMoveInterval;
         private static Direction _alienDirection;
         private static Bullet _playerBullet;
-        private static Bullet[] _alienBullets;
+        private static List<Bullet> _alienBullets;
+        private static readonly Random _random = new Random();
 
         private static void Main(string[] args)
         {
@@ -75,6 +76,7 @@ namespace SpaceInvaders
             _alienDirection = Direction.Right;
 
             _playerBullet = new Bullet();
+            _alienBullets = new List<Bullet>();
         }
 
         private static CharacterType DetermineAlienType(in int row)
@@ -172,6 +174,11 @@ namespace SpaceInvaders
             }
 
             _playerBullet?.MoveBullet();
+
+            foreach (var alienBullet in _alienBullets)
+            {
+
+            }
 
             if (_playerBullet != null && _playerBullet.IsActive)
             {
